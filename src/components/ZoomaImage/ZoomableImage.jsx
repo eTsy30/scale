@@ -70,7 +70,7 @@ export const ZoomableImage = () => {
   return (
     <div className="zoom-outer">
       <div className="containerRules">
-        <RulesHorisontal size={scale} pointY={pointY} pointX={0} />
+        <RulesHorisontal size={scale} pointY={pointY} pointX={-1970} />
         <RulesVertical size={scale} pointX={-2150 + pointX} pointY={0} />
         <div
           id="zoom"

@@ -45,5 +45,5 @@ body {
 .containerRules > .ruler:first-child {
   transform: rotate(-90deg) scale(-1, -1);
   top: -145px;
-  left: -130%;
+  /* left: -130%; */
 }
