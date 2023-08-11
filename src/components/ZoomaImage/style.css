@@ -15,16 +15,18 @@ body {
 .image {
   width: 200px;
   height: 50%;
-  margin: 0 auto;
+  margin: 0 30px;
 }
 #info {
-  position: fixed;
-  top: 97%;
-  left: 56%;
-  height: 20px;
+  top: 10px;
+  left: 10px;
   background: white;
   padding: 5px;
-  border: 1px solid black;
+  margin-left: 40px;
+  position: fixed;
+  height: 20px;
+  padding: 5px;
+  border: none;
 }
 
 .vertical {
@@ -42,6 +44,6 @@ body {
 }
 .containerRules > .ruler:first-child {
   transform: rotate(-90deg) scale(-1, -1);
-  top: 753px;
-  left: -48%;
+  top: -145px;
+  left: -130%;
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './style.css'
 import Image from '../../img/test.avif'
-import { Rules, RulesVertical } from '../Rules/RulesVertical'
+import { RulesVertical } from '../Rules/RulesVertical'
 import { RulesHorisontal } from '../Rules/RulesHorisontal'
 export const ZoomableImage = () => {
   const [scale, setScale] = useState(1)
@@ -10,22 +10,8 @@ export const ZoomableImage = () => {
   const [pointY, setPointY] = useState(0)
   const [start, setStart] = useState({ x: 0, y: 0 })
   const [mousePos, setMousePos] = useState({})
-  const whdth = window.innerWidth
-  const height = window.innerHeight
-
-  //////
-
-  const imageRef = useRef(null)
-
-  const handleButtonClick = () => {
-    const scaledWidth = imageRef.current.offsetWidth
-    const scaledHeight = imageRef.current.offsetHeight
-
-    console.log(`Scaled Width: ${scaledWidth}px`)
-    console.log(`Scaled Height: ${scaledHeight}px`)
-  }
-
-  //////
+  const zoomRef = useRef(null)
+  const infoRef = useRef(null)
   useEffect(() => {
     const handleMouseMove = (event) => {
       setMousePos({ x: event.clientX, y: event.clientY })
@@ -71,73 +57,33 @@ export const ZoomableImage = () => {
     setTransform(e.clientX, e.clientY)
   }
 
-  const setTransform = (cursorX, cursorY) => {
-    handleButtonClick()
+  const setTransform = () => {
+    if (zoomRef.current) {
+      zoomRef.current.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`
+    }
 
-    const zoom = document.getElementById('zoom')
-    zoom.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`
-    console.log(zoom, 'zoom')
-    const info = document.getElementById('info')
-    info.innerHTML = `Scale: ${scale.toFixed(
-      2
-    )}, Cursor: (${cursorX}, ${cursorY}), translate: (${pointX}, ${pointY}),mouse position (${
-      mousePos.x
-    }, ${mousePos.y})`
-
-    // const cursorRange = document.getElementById('cursor-range')
-    // cursorRange.value = cursorX
+    if (infoRef.current) {
+      infoRef.current.innerHTML = `Scale: ${scale.toFixed(2)}`
+    }
   }
 
   return (
     <div className="zoom-outer">
       <div className="containerRules">
-        <RulesHorisontal size={scale} pointY={0} pointX={0} />
-        <RulesVertical size={scale} pointX={-2200 + pointX} pointY={0} />
-        {/* -3307 +  */}
-        {/* 
-        <input
-          className="horisontal"
-          id="cursor-range"
-          type="range"
-          min={whdth * -1}
-          max={whdth}
-          value={pointX}
-          step="3"
-
-          // onChange={handleRangeChangeX}
-        />
-        <input
-          className="vertical"
-          id="cursor-range"
-          type="range"
-          min={0}
-          max={height}
-          step="1"
-          value={pointY}
-
-          // onChange={handleRangeChangeY}
-        /> */}
+        <RulesHorisontal size={scale} pointY={pointY} pointX={0} />
+        <RulesVertical size={scale} pointX={-2150 + pointX} pointY={0} />
         <div
           id="zoom"
+          ref={zoomRef}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
           onWheel={handleWheel}
           style={{ cursor: panning ? 'grabbing' : 'grab' }}
         >
-          <img src={Image} alt="zoom" className="image" ref={imageRef} />
+          <img src={Image} alt="zoom" className="image" />
         </div>
-        <div
-          id="info"
-          style={{
-            position: 'fixed',
-            top: '10px',
-            left: '10px',
-            background: 'white',
-            padding: '5px',
-            border: '1px solid black',
-          }}
-        ></div>
+        <div id="info" ref={infoRef}></div>
       </div>
     </div>
   )
