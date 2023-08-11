@@ -4,6 +4,8 @@ import Image from '../../img/test.avif'
 import { RulesVertical } from '../Rules/RulesVertical'
 import { RulesHorisontal } from '../Rules/RulesHorisontal'
 export const ZoomableImage = () => {
+  const SCALE_STEP = 0.02
+  const MIN_SCALE = 0.05
   const [scale, setScale] = useState(1)
   const [panning, setPanning] = useState(false)
   const [pointX, setPointX] = useState(0)
@@ -45,13 +47,15 @@ export const ZoomableImage = () => {
 
   const handleWheel = (e) => {
     e.preventDefault()
-    if (scale < 0.05) {
-      setScale(0.05)
+    if (scale < MIN_SCALE) {
+      setScale(MIN_SCALE)
     }
     const xs = (e.clientX - pointX) / scale
     const ys = (e.clientY - pointY) / scale
     const delta = e.wheelDelta ? e.wheelDelta : -e.deltaY
-    setScale((prevScale) => (delta > 0 ? prevScale + 0.02 : prevScale - 0.02))
+    setScale((prevScale) =>
+      delta > 0 ? prevScale + SCALE_STEP : prevScale - SCALE_STEP
+    )
     setPointX(e.clientX - xs * scale)
     setPointY(e.clientY - ys * scale)
     setTransform(e.clientX, e.clientY)
