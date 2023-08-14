@@ -3,6 +3,7 @@ import './style.css'
 import Image from '../../img/i.webp'
 import { RulesVertical } from '../Rules/RulesVertical'
 import { RulesHorisontal } from '../Rules/RulesHorisontal'
+
 export const ZoomableImage = () => {
   const SCALE_STEP = 0.02
   const MIN_SCALE = 0.05
@@ -13,9 +14,9 @@ export const ZoomableImage = () => {
   const [start, setStart] = useState({ x: 0, y: 0 })
   const [mousePos, setMousePos] = useState({})
   const [touchPos, setTouchPos] = useState({})
-  const [distanse, setdistanse] = useState(0)
   const zoomRef = useRef(null)
   const infoRef = useRef(null)
+
   useEffect(() => {
     const handleMouseMove = (event) => {
       setMousePos({ x: event.clientX, y: event.clientY })
@@ -92,7 +93,6 @@ export const ZoomableImage = () => {
       infoRef.current.innerHTML = `Scale: ${scale.toFixed(2)}`
     }
   }
-  //////////
   const handleTouchStart = (e) => {
     e.preventDefault()
     if (e.touches.length === 2) {
@@ -109,22 +109,47 @@ export const ZoomableImage = () => {
   }
 
   const handleTouchMove = (e) => {
+    console.log(e)
     if (!panning) {
       return
     }
+    e.preventDefault()
+    if (scale < MIN_SCALE) {
+      setScale(MIN_SCALE)
+    }
 
-    const touch1 = e.touches[0]
-    const touch2 = e.touches[1]
+    if (e.touches.length === 2) {
+      const touch1 = e.touches[0]
+      const touch2 = e.touches[1]
+      const touchDistance = Math.hypot(
+        touch2.clientX - touch1.clientX,
+        touch2.clientY - touch1.clientY
+      )
+      const scaleFactor = touchDistance.toString()[0]
+
+      setScale((prevScale) =>
+        scaleFactor > 1 ? prevScale + SCALE_STEP : prevScale - SCALE_STEP
+      )
+
+      const touchPos = {
+        x: (touch1.clientX + touch2.clientX) / 2,
+        y: (touch1.clientY + touch2.clientY) / 2,
+      }
+
+      setPointX(touchPos.x - start.x * SCALE_STEP)
+      setPointY(touchPos.y - start.y * SCALE_STEP)
+      setTransform(touchPos.x, touchPos.y)
+    }
+
     const touchPos = {
-      x: (touch1.clientX + touch2.clientX) / 2,
-      y: (touch1.clientY + touch2.clientY) / 2,
+      x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+      y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
     }
 
     setPointX(touchPos.x - start.x)
     setPointY(touchPos.y - start.y)
     setTransform(touchPos.x, touchPos.y)
   }
-
   return (
     <div className="zoom-outer">
       <div className="containerRules">
