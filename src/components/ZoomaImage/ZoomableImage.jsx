@@ -109,7 +109,6 @@ export const ZoomableImage = () => {
   }
 
   const handleTouchMove = (e) => {
-    console.log(e)
     if (!panning) {
       return
     }
@@ -118,7 +117,7 @@ export const ZoomableImage = () => {
       setScale(MIN_SCALE)
     }
 
-    if (e.touches.length === 2) {
+    if (e.touches.length === 3) {
       const touch1 = e.touches[0]
       const touch2 = e.touches[1]
       const touchDistance = Math.hypot(
