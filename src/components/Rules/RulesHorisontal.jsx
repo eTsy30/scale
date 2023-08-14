@@ -10,13 +10,13 @@ export const RulesHorisontal = ({ size, pointX, pointY }) => {
   }, [pointX, pointY])
 
   return (
-    <div class="ruler" ref={rulerRefH}>
+    <div className="ruler" ref={rulerRefH}>
       {[...Array(20)].map((_, index) => {
         return (
-          <div class="ruler-cantimetr" key={index}>
+          <div className="ruler-cantimetr" key={index}>
             {(index - 5) * INTERVAL_SIZE}
-            {[...Array(10)].map(() => {
-              return <div class="ruler-milimetr"></div>
+            {[...Array(10)].map((_, index) => {
+              return <div className="ruler-milimetr" key={index}></div>
             })}
           </div>
         )

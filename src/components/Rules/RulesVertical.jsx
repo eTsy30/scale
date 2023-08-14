@@ -11,7 +11,7 @@ export const RulesVertical = ({ size, pointX, pointY }) => {
   }, [pointX, pointY])
 
   return (
-    <div class="ruler" ref={rulerRefV}>
+    <div className="ruler" ref={rulerRefV}>
       {[...Array(20)].map((_, index) => {
         return (
           <div className="ruler-cantimetr" key={index}>

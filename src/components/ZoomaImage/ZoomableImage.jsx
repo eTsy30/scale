@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './style.css'
-import Image from '../../img/test.avif'
+import Image from '../../img/i.webp'
 import { RulesVertical } from '../Rules/RulesVertical'
 import { RulesHorisontal } from '../Rules/RulesHorisontal'
 export const ZoomableImage = () => {
@@ -12,6 +12,8 @@ export const ZoomableImage = () => {
   const [pointY, setPointY] = useState(0)
   const [start, setStart] = useState({ x: 0, y: 0 })
   const [mousePos, setMousePos] = useState({})
+  const [touchPos, setTouchPos] = useState({})
+  const [distanse, setdistanse] = useState(0)
   const zoomRef = useRef(null)
   const infoRef = useRef(null)
   useEffect(() => {
@@ -23,6 +25,26 @@ export const ZoomableImage = () => {
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [])
+
+  useEffect(() => {
+    const handleTouchMove = (event) => {
+      if (event.touches.length === 2) {
+        const touch1 = event.touches[0]
+        const touch2 = event.touches[1]
+        const touchPos = {
+          x: (touch1.clientX + touch2.clientX) / 2,
+          y: (touch1.clientY + touch2.clientY) / 2,
+        }
+        setTouchPos(touchPos)
+      }
+    }
+
+    window.addEventListener('touchmove', handleTouchMove)
+
+    return () => {
+      window.removeEventListener('touchmove', handleTouchMove)
     }
   }, [])
 
@@ -70,6 +92,38 @@ export const ZoomableImage = () => {
       infoRef.current.innerHTML = `Scale: ${scale.toFixed(2)}`
     }
   }
+  //////////
+  const handleTouchStart = (e) => {
+    e.preventDefault()
+    if (e.touches.length === 2) {
+      setStart({
+        x: (e.touches[0].clientX + e.touches[1].clientX) / 2 - pointX,
+        y: (e.touches[0].clientY + e.touches[1].clientY) / 2 - pointY,
+      })
+      setPanning(true)
+    }
+  }
+
+  const handleTouchEnd = () => {
+    setPanning(false)
+  }
+
+  const handleTouchMove = (e) => {
+    if (!panning) {
+      return
+    }
+
+    const touch1 = e.touches[0]
+    const touch2 = e.touches[1]
+    const touchPos = {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2,
+    }
+
+    setPointX(touchPos.x - start.x)
+    setPointY(touchPos.y - start.y)
+    setTransform(touchPos.x, touchPos.y)
+  }
 
   return (
     <div className="zoom-outer">
@@ -82,6 +136,9 @@ export const ZoomableImage = () => {
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onTouchMove={handleTouchMove}
           onWheel={handleWheel}
           style={{ cursor: panning ? 'grabbing' : 'grab' }}
         >
